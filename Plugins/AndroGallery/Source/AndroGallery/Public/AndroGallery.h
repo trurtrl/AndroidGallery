@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+//#include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
+#include "AndroGalleryInterface.h"
 
-class FAndroGalleryModule : public IModuleInterface
+class FAndroGalleryModule : public FAndroGalleryInterface
 {
 public:
 

@@ -10,14 +10,15 @@
 	"DocsURL": "",
 	"MarketplaceURL": "",
 	"SupportURL": "",
-	"CanContainContent": true,
+	"CanContainContent": false,
 	"IsBetaVersion": false,
-	"Installed": false,
+	"Installed": true,
 	"Modules": [
-		{
-			"Name": "AndroGallery",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		}
+        {
+            "Name": "AndroGallery",
+            "Type": "Runtime",
+            "LoadingPhase": "Default",
+            "WhitelistPlatforms": [ "Android" ]
+        }
 	]
 }

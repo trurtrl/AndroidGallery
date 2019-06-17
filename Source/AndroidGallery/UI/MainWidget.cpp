@@ -3,6 +3,8 @@
 
 #include "MainWidget.h"
 #include "Engine/Engine.h"
+#include "AndroGallery.h"
+#include "AndroGallery/Public/AndroidGateway.h"
 
 
 void UMainWidget::NativeConstruct()
@@ -17,5 +19,12 @@ void UMainWidget::NativeConstruct()
 
 void UMainWidget::ButtonGetPicsClicked()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Path : ...")));
+	FString path = "";
+
+	FAndroidGatewayPtr gatewayPtr = FAndroGalleryInterface::Get().GetGateway();
+	if (gatewayPtr.IsValid())
+	{
+		path = gatewayPtr.Get()->GetGalleryRootPath();
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Path : %s"), *path));
 }

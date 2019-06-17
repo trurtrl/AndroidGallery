@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+    ! Created by trurtrl !
+-->
+<root xmlns:android="http://schemas.android.com/apk/res/android">
+  <init>
+    <log text="AndroGallery init"/>
+  </init>
+
+  <proguardAdditions>
+    <insert>
+     
+    </insert>
+  </proguardAdditions>
+
+  <prebuildCopies>
+      <copyDir src="$S(PluginDir)/Java" dst="$S(BuildDir)" />
+  </prebuildCopies>
+
+  <gameActivityImportAdditions>
+    <insert>
+     <!--Inject imports here-->
+      import android.content.pm.PackageManager;
+      import android.os.Bundle;
+      import android.content.Context;
+      import android.os.Environment;
+      import android.support.annotation.NonNull;
+//      import android.support.v7.app.AppCompatActivity;
+      import android.util.Log;
+      import android.widget.Toast;
+
+      //import java.util.ArrayList;
+      //import java.util.Arrays;
+
+      //import com.epicgames.ue4.AndroGetter.*;
+      //import android.os.Message;
+      //import android.os.Bundle;
+
+    </insert>
+  </gameActivityImportAdditions>
+
+  <androidManifestUpdates>
+    
+    <!--Permissions for bluetooth manipulations-->
+    <addPermission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+     
+  </androidManifestUpdates>
+  
+  <!--
+  ####################### Activity/App lifecycle callbacks ######################
+  -->
+  <!--
+  # optional additions to GameActivity onCreate in GameActivity.java 
+  -->
+	<gameActivityOnCreateAdditions>
+     <insert>
+/*        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
+*/
+     </insert>
+  </gameActivityOnCreateAdditions>
+  
+  
+ 
+   <!-- optional additions to GameActivity onDestroy in GameActivity.java -->
+	 <gameActivityOnDestroyAdditions>
+     <insert>
+
+     </insert>
+   </gameActivityOnDestroyAdditions>
+	 	
+	 <!-- optional additions to GameActivity onStart in GameActivity.java -->
+	 <gameActivityOnStartAdditions></gameActivityOnStartAdditions>
+	 	
+	 <!-- optional additions to GameActivity onStop in GameActivity.java -->
+	 <gameActivityOnStopAdditions>
+        <insert>
+
+        </insert>
+   </gameActivityOnStopAdditions>
+	 	
+	 <!-- optional additions to GameActivity onPause in GameActivity.java -->
+	 <gameActivityOnPauseAdditions>
+     <insert>
+
+     </insert>
+     
+   </gameActivityOnPauseAdditions>
+	  	
+	 <!-- optional additions to GameActivity onResume in GameActivity.java -->
+	 <gameActivityOnResumeAdditions></gameActivityOnResumeAdditions>
+
+  
+    <!--
+    # Methods, inner classes, and other the other additions
+    --> 
+  <gameActivityClassAdditions>
+    <insert>
+      //  variables
+      
+      // callbacks to C++
+      //private static native void handleSendException(int, String);
+
+
+/*        @Override
+        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+            if (requestCode == 1) {
+                if (grantResults.length > 0) {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        Log.d("Gallery", "Permission granted");
+                    }
+                }
+            } else {
+                Log.d("Gallery", "Permission's NOT granted");
+            }
+        }
+*/      
+      
+        String getGalleryRootPath() {
+            String path = "";
+//            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
+                File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+
+                if (!folder.exists()) {
+                    folder.mkdir();
+                }
+
+                path = folder.getAbsolutePath();
+/*              if (galleryPathTextView != null) {
+                    galleryPathTextView.setText(path);
+                }
+
+                File root = new File(path);
+                File[] files = root.listFiles();
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        try {
+                            Log.d("Gallery", "canonical = " + file.getCanonicalFile() + "\tname = " + file.getName() );
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (myFileFilter.isPicture(file)) {
+
+                    }
+                    else {
+                        Log.d("Gallery", "file = " + file.getName());
+                    }
+                }
+               
+
+            } else {
+                Log.d("Gallery", "There is no permission to read external storage");
+                Toast toast = Toast.makeText(getApplicationContext(), "No permission granted!", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+*/            
+            return path;
+        }
+
+    </insert>
+  </gameActivityClassAdditions>
+
+
+
+
+</root>
+
