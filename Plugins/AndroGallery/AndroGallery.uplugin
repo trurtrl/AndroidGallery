@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "AndroGallery",
+	"Description": "",
+	"Category": "Other",
+	"CreatedBy": "trurtrl",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "AndroGallery",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
