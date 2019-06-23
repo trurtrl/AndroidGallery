@@ -13,12 +13,18 @@
 	"CanContainContent": false,
 	"IsBetaVersion": false,
 	"Installed": true,
-	"Modules": [
+    "Modules": [
         {
             "Name": "AndroGallery",
             "Type": "Runtime",
             "LoadingPhase": "Default",
             "WhitelistPlatforms": [ "Android" ]
         }
-	]
+    ],
+    "Plugins": [
+        {
+            "Name": "AndroidPermission",
+            "Enabled": true
+        }
+    ]
 }

@@ -24,7 +24,20 @@ void UMainWidget::ButtonGetPicsClicked()
 	FAndroidGatewayPtr gatewayPtr = FAndroGalleryInterface::Get().GetGateway();
 	if (gatewayPtr.IsValid())
 	{
-		path = gatewayPtr.Get()->GetGalleryRootPath();
+		if (!gatewayPtr.Get()->OnExternalStoragePath.IsBound())
+		{
+			gatewayPtr.Get()->OnExternalStoragePath.AddDynamic(this, &UMainWidget::OnExternalStoragePathHandle);
+		}
+		gatewayPtr.Get()->AskGalleryRootPath();
 	}
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Path : %s"), *path));
+}
+
+void UMainWidget::OnExternalStoragePathHandle(const FString Path)
+{
+	if (Path != "")
+	{
+		//	handle path
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Path : %s"), *Path));
 }

@@ -1,17 +1,10 @@
 #pragma once
 
-#include "CoreMinimal.h"
-//#include "EngineMinimal.h"
-//#include "Core.h"
+//#include "CoreMinimal.h"
+#include "EngineMinimal.h"
+#include "Core.h"
 
-//#if PLATFORM_ANDROID
-//#include "AndroidPlatform.h"
-//#include "Android/AndroidJava.h"
-//#include "Android/AndroidApplication.h"
-//#include "Android/AndroidJNI.h"
-//#include <android_native_app_glue.h>
-//#endif
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnExternalStoragePath, const FString, Path);
 
 class ANDROGALLERY_API FAndroidGateway
 {
@@ -19,11 +12,19 @@ public:
 
     FAndroidGateway();
  
-    FString GetGalleryRootPath();
+    void AskGalleryRootPath();
 
-//#if PLATFORM_ANDROID
-//	// JNI Methods
-//	static jmethodID GetGalleryRootPathMethod;
-//#endif
-    
+	FOnExternalStoragePath OnExternalStoragePath;
+   
+	UFUNCTION()
+	void OnPermissionGrantedHandle(const TArray<FString>& Permissions, const TArray<bool>& GrantResults);
+
+private:
+
+	FString m_StoragePermission;
+
+	bool CheckPermissionToReadStorage();
+	void AskPermissionToReadStorage();
+	FString AskPath();
+
 };

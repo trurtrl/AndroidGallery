@@ -23,6 +23,8 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* m_ButtonGetPics;
 
+	UFUNCTION()
+	void OnExternalStoragePathHandle(const FString Path);
 
 private:
 
