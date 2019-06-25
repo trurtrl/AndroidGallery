@@ -4,7 +4,6 @@
 #include "MainWidget.h"
 #include "Engine/Engine.h"
 #include "AndroGallery.h"
-#include "AndroGallery/Public/AndroidGateway.h"
 
 
 void UMainWidget::NativeConstruct()
@@ -15,21 +14,29 @@ void UMainWidget::NativeConstruct()
 	{
 		m_ButtonGetPics->OnReleased.AddDynamic(this, &UMainWidget::ButtonGetPicsClicked);
 	}
+
+	m_AndroidGateway = NewObject<UAndroidGateway>(this);
 }
 
 void UMainWidget::ButtonGetPicsClicked()
 {
 	FString path = "";
 
-	FAndroidGatewayPtr gatewayPtr = FAndroGalleryInterface::Get().GetGateway();
-	if (gatewayPtr.IsValid())
+	//FAndroidGatewayPtr gatewayPtr = FAndroGalleryInterface::Get().GetGateway();
+	//if (gatewayPtr.IsValid())
+	//{
+	//	if (!gatewayPtr.Get()->OnExternalStoragePath.IsBound())
+	//	{
+	//		gatewayPtr.Get()->OnExternalStoragePath.AddDynamic(this, &UMainWidget::OnExternalStoragePathHandle);
+	//	}
+	//	gatewayPtr.Get()->AskGalleryRootPath();
+	//}
+	if (!m_AndroidGateway->OnExternalStoragePath.IsBound())
 	{
-		if (!gatewayPtr.Get()->OnExternalStoragePath.IsBound())
-		{
-			gatewayPtr.Get()->OnExternalStoragePath.AddDynamic(this, &UMainWidget::OnExternalStoragePathHandle);
-		}
-		gatewayPtr.Get()->AskGalleryRootPath();
+		m_AndroidGateway->OnExternalStoragePath.AddDynamic(this, &UMainWidget::OnExternalStoragePathHandle);
 	}
+	m_AndroidGateway->AskGalleryRootPath();
+
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Path : %s"), *path));
 }
 

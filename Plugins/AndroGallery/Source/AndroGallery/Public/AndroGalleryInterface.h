@@ -6,7 +6,7 @@
 #include "AndroidGateway.h"
 
 
-typedef TSharedPtr<FAndroidGateway, ESPMode::ThreadSafe> FAndroidGatewayPtr;
+typedef TSharedPtr<UAndroidGateway, ESPMode::ThreadSafe> FAndroidGatewayPtr;
 
 class FAndroGalleryInterface : public IModuleInterface
 {
@@ -22,13 +22,13 @@ public:
         return FModuleManager::Get().IsModuleLoaded("AndroGallery");
     }
     
-    inline FAndroidGatewayPtr GetGateway() const 
-    {
-        return m_AndroidGatewayPtr;
-    }
+    //inline FAndroidGatewayPtr GetGateway() const 
+    //{
+    //    return m_AndroidGatewayPtr;
+    //}
     
 protected:
     
-    FAndroidGatewayPtr m_AndroidGatewayPtr;
+//    FAndroidGatewayPtr m_AndroidGatewayPtr;
     
 };

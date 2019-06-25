@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Button.h"
+#include "AndroGallery/Public/AndroidGateway.h"
 #include "MainWidget.generated.h"
 
 /**
@@ -30,5 +31,8 @@ private:
 
 	UFUNCTION()
 	void ButtonGetPicsClicked();
+
+	UPROPERTY()
+	UAndroidGateway* m_AndroidGateway;
 	
 };

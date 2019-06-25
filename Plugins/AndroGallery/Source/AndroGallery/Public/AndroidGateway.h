@@ -1,16 +1,21 @@
 #pragma once
 
-//#include "CoreMinimal.h"
-#include "EngineMinimal.h"
-#include "Core.h"
+#include "CoreMinimal.h"
+#include "UObject/NoExportTypes.h"
+#include "AndroidGateway.generated.h"
+//#include "EngineMinimal.h"
+//#include "Core.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnExternalStoragePath, const FString, Path);
 
-class ANDROGALLERY_API FAndroidGateway
+UCLASS()
+class ANDROGALLERY_API UAndroidGateway : public UObject
 {
+	GENERATED_BODY()
+
 public:
 
-    FAndroidGateway();
+    UAndroidGateway();
  
     void AskGalleryRootPath();
 

@@ -2,6 +2,7 @@
 #include "AndroidPermission/Classes/AndroidPermissionFunctionLibrary.h"
 #include "AndroidPermission/Classes/AndroidPermissionCallbackProxy.h"
 
+
 #if PLATFORM_ANDROID
 #include "AndroidPlatform.h"
 #include "Android/AndroidJava.h"
@@ -11,13 +12,13 @@
 #endif
 
 
-FAndroidGateway::FAndroidGateway()
+UAndroidGateway::UAndroidGateway()
 	: m_StoragePermission("android.permission.READ_EXTERNAL_STORAGE")
 {
 
 }
 
-void FAndroidGateway::AskGalleryRootPath()
+void UAndroidGateway::AskGalleryRootPath()
 {
 	if (CheckPermissionToReadStorage())
 	{
@@ -29,12 +30,12 @@ void FAndroidGateway::AskGalleryRootPath()
 	}
 }
 
-bool FAndroidGateway::CheckPermissionToReadStorage()
+bool UAndroidGateway::CheckPermissionToReadStorage()
 {
 	return UAndroidPermissionFunctionLibrary::CheckPermission(m_StoragePermission);
 }
 
-void FAndroidGateway::AskPermissionToReadStorage()
+void UAndroidGateway::AskPermissionToReadStorage()
 {
 	TArray<FString> permissions;
 	permissions.Add(m_StoragePermission);
@@ -43,12 +44,12 @@ void FAndroidGateway::AskPermissionToReadStorage()
 	{
 		if (!permissionProxy->OnPermissionsGrantedDynamicDelegate.IsBound())
 		{
-			permissionProxy->OnPermissionsGrantedDynamicDelegate.AddDynamic(this, &FAndroidGateway::OnPermissionGrantedHandle);
+			permissionProxy->OnPermissionsGrantedDynamicDelegate.AddDynamic(this, &UAndroidGateway::OnPermissionGrantedHandle);
 		}
 	}
 }
 
-void FAndroidGateway::OnPermissionGrantedHandle(const TArray<FString>& Permissions, const TArray<bool>& GrantResults)
+void UAndroidGateway::OnPermissionGrantedHandle(const TArray<FString>& Permissions, const TArray<bool>& GrantResults)
 {
 	FString path = "";
 	for (int32 i = 0; i < Permissions.Num(); ++i)
@@ -61,7 +62,7 @@ void FAndroidGateway::OnPermissionGrantedHandle(const TArray<FString>& Permissio
 	OnExternalStoragePath.Broadcast(path);
 }
 
-FString FAndroidGateway::AskPath()
+FString UAndroidGateway::AskPath()
 {
 	FString path = "";
 

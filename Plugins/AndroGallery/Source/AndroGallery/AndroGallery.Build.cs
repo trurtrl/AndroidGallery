@@ -41,7 +41,7 @@ namespace UnrealBuildTool.Rules
             PrivateDependencyModuleNames.AddRange(
                 new string[]
                 {
-//				"CoreUObject",
+				"CoreUObject",
 				"Engine",
                     //				"Slate",
                     //				"SlateCore",

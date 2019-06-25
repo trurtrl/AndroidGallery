@@ -16,7 +16,7 @@ void FAndroGalleryModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 #if PLATFORM_ANDROID
-	m_AndroidGatewayPtr = MakeShareable(new FAndroidGateway());
+//	m_AndroidGatewayPtr = MakeShareable(new FAndroidGateway());
 	androModule = &FModuleManager::LoadModuleChecked<FAndroGalleryModule>("AndroGallery");
 #endif
 }
@@ -25,7 +25,7 @@ void FAndroGalleryModule::ShutdownModule()
 {
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
-	m_AndroidGatewayPtr.Reset();
+//	m_AndroidGatewayPtr.Reset();
 	androModule = nullptr;
 }
 
