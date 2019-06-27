@@ -20,24 +20,12 @@ void UMainWidget::NativeConstruct()
 
 void UMainWidget::ButtonGetPicsClicked()
 {
-	FString path = "";
-
-	//FAndroidGatewayPtr gatewayPtr = FAndroGalleryInterface::Get().GetGateway();
-	//if (gatewayPtr.IsValid())
-	//{
-	//	if (!gatewayPtr.Get()->OnExternalStoragePath.IsBound())
-	//	{
-	//		gatewayPtr.Get()->OnExternalStoragePath.AddDynamic(this, &UMainWidget::OnExternalStoragePathHandle);
-	//	}
-	//	gatewayPtr.Get()->AskGalleryRootPath();
-	//}
 	if (!m_AndroidGateway->OnExternalStoragePath.IsBound())
 	{
 		m_AndroidGateway->OnExternalStoragePath.AddDynamic(this, &UMainWidget::OnExternalStoragePathHandle);
 	}
-	m_AndroidGateway->AskGalleryRootPath();
 
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Path : %s"), *path));
+	m_AndroidGateway->AskGalleryRootPath();
 }
 
 void UMainWidget::OnExternalStoragePathHandle(const FString Path)

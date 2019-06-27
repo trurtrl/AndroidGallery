@@ -69,7 +69,7 @@ FString UAndroidGateway::AskPath()
 #if PLATFORM_ANDROID
 	if (JNIEnv* Env = FAndroidApplication::GetJavaEnv())
 	{
-		jmethodID GetGalleryRootPathMethod = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "getGalleryRootPath", "()Z", false);
+		jmethodID GetGalleryRootPathMethod = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "getGalleryRootPath", "()Ljava/lang/String;", false);
 		jstring jPath = (jstring)FJavaWrapper::CallObjectMethod(Env, FJavaWrapper::GameActivityThis, GetGalleryRootPathMethod);
 		if (jPath != NULL)
 		{
