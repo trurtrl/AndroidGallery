@@ -34,8 +34,10 @@ public:
 
 	void CreateWindow(EWidgeTType Type);
 
-	void AddCatalogsToCatalogListWidget(TArray<FString>& Catalogs);
+	void AddCatalogToCatalogListWidget(const FString& Path, const TArray<FString>& Catalogs);
+	void AddCatalogToCatalogListWidget(const FString& Path, const FString& Catalog);
 
+	void ClearCatalogListWidget();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TSubclassOf<UMainWidget> m_UMainWidgetClass;

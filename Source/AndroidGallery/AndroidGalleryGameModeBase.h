@@ -14,4 +14,7 @@ class ANDROIDGALLERY_API AAndroidGalleryGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+
+	virtual void BeginPlay() override;
 };

@@ -12,11 +12,11 @@ AAGHUD::AAGHUD()
 	{
 		m_UMainWidgetClass = UMainWidgetClassFinder.Class;
 	}
-	//static ConstructorHelpers::FClassFinder<UCatalogListWidget> UCatalogListWidgetClassFinder(TEXT("/Game/WBP_Main.WBP_Main_C"));
-	//if (UCatalogListWidgetClassFinder.Succeeded())
-	//{
-	//	m_UCatalogListWidgetClass = UCatalogListWidgetClassFinder.Class;
-	//}
+	static ConstructorHelpers::FClassFinder<UCatalogListWidget> UCatalogListWidgetClassFinder(TEXT("WidgetBlueprint'/Game/WBP_CatalogList.WBP_CatalogList_C'"));
+	if (UCatalogListWidgetClassFinder.Succeeded())
+	{
+		m_UCatalogListWidgetClass = UCatalogListWidgetClassFinder.Class;
+	}
 }
 
 void AAGHUD::BeginPlay()
@@ -68,20 +68,46 @@ void AAGHUD::CreateWindow(EWidgeTType Type)
 	}
 
 	m_CurrentWidget = newWidget;
+	m_CurrentWidgetType = Type;
 	if (m_CurrentWidget)
 	{
 		m_CurrentWidget->AddToViewport();
 	}
 }
 
-void AAGHUD::AddCatalogsToCatalogListWidget(TArray<FString>& Catalogs)
+void AAGHUD::AddCatalogToCatalogListWidget(const FString& Path, const TArray<FString>& Catalogs)
 {
 	UCatalogListWidget* catalogListWidget = Cast<UCatalogListWidget>(m_CurrentWidget);
 	if (catalogListWidget)
 	{
+		//	add "go to 1 level up"
+		catalogListWidget->AddItem(Path, "..");
+
+		//	add "go into this catalog"
+		catalogListWidget->AddItem(Path, ".");
+
+		//	add catalogs
 		for (FString catalog : Catalogs)
 		{
-
+			catalogListWidget->AddItem(Path, catalog);
 		}
+	}
+}
+
+void AAGHUD::AddCatalogToCatalogListWidget(const FString& Path, const FString& Catalog)
+{
+	UCatalogListWidget* catalogListWidget = Cast<UCatalogListWidget>(m_CurrentWidget);
+	if (catalogListWidget)
+	{
+		catalogListWidget->AddItem(Path, Catalog);
+	}
+}
+
+void AAGHUD::ClearCatalogListWidget()
+{
+	UCatalogListWidget* catalogListWidget = Cast<UCatalogListWidget>(m_CurrentWidget);
+	if (catalogListWidget)
+	{
+		catalogListWidget->ClearCatalogList();
 	}
 }

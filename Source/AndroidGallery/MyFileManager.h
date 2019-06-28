@@ -16,11 +16,22 @@ class ANDROIDGALLERY_API UMyFileManager : public UObject
 	
 public:
 
-	void GoIntoCatalog(const FString& Path);
+	UMyFileManager(const FObjectInitializer & ObjectInitializer);
+
+	void GoIntoCatalog(const FString& CatalogFullPath, const FString& CatalogName);
+
+	void SetRootGalleryPath(const FString& Path);
+
+	const FString& GetConcatenator() const;
 
 private:
 
-	TArray<FString> m_CatalogNames;
+	FString m_RootGalleryPath;
+	FString m_Concatenator;
+	FString m_ParentDirectoryPath;
+	FString m_CurrentDirectoryPath;
+
+	TArray<FString> m_ChildCatalogNames;
 	TArray<FString> m_FilNames;
 
 	bool IsCatalogInsideExist(const FString& Path);
