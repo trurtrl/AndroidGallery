@@ -16,20 +16,15 @@ class ANDROIDGALLERY_API UMyFileManager : public UObject
 	
 public:
 
-	UMyFileManager();
-
-	bool IsCatalogInsideExist(const FString& Path);
-	bool IsFileInsideExist(const FString& Path);
-
-	const TArray<FString>& GetCatalogNames() const;
-	const TArray<FString>& GetFileNames() const;
+	void GoIntoCatalog(const FString& Path);
 
 private:
 
 	TArray<FString> m_CatalogNames;
 	TArray<FString> m_FilNames;
 
-	FString m_CurrentCatalog;
+	bool IsCatalogInsideExist(const FString& Path);
+	bool IsFileInsideExist(const FString& Path);
 
 	//	true for catalogs, false for files
 	void LookForContent(const FString& Path, bool Catalog);

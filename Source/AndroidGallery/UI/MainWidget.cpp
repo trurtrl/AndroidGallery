@@ -2,17 +2,10 @@
 
 
 #include "MainWidget.h"
-#include "Engine/Engine.h"
+#include "AndroGallery/Public/AndroidGateway.h"
 #include "AndroGallery.h"
+#include "MyGameInstance.h"
 
-
-UMainWidget::UMainWidget(const FObjectInitializer & ObjectInitializer)
-	: Super(ObjectInitializer)
-	, m_AndroidGateway(nullptr)
-	, m_FileManager(nullptr)
-{
-
-}
 
 void UMainWidget::NativeConstruct()
 {
@@ -22,51 +15,28 @@ void UMainWidget::NativeConstruct()
 	{
 		m_ButtonGetPics->OnReleased.AddDynamic(this, &UMainWidget::ButtonGetPicsClicked);
 	}
-
-	m_AndroidGateway = NewObject<UAndroidGateway>(this);
-	m_FileManager = NewObject<UMyFileManager>(this);
 }
 
 void UMainWidget::ButtonGetPicsClicked()
 {
-	if (!m_AndroidGateway->OnExternalStoragePath.IsBound())
+	UMyGameInstance* GI = Cast<UMyGameInstance>(GetWorld()->GetGameInstance());
+	if (GI)
 	{
-		m_AndroidGateway->OnExternalStoragePath.AddDynamic(this, &UMainWidget::OnExternalStoragePathHandle);
-	}
+		UAndroidGateway* androidGateway = GI->GetAndroidGateway();
+		if (!androidGateway->OnExternalStoragePath.IsBound())
+		{
+			androidGateway->OnExternalStoragePath.AddDynamic(this, &UMainWidget::OnExternalStoragePathHandle);
+		}
 
-	m_AndroidGateway->AskGalleryRootPath();
+		androidGateway->AskGalleryRootPath();
+	}
 }
 
 void UMainWidget::OnExternalStoragePathHandle(const FString Path)
 {
-	if (Path != "" && m_FileManager)
+	UMyGameInstance* GI = Cast<UMyGameInstance>(GetWorld()->GetGameInstance());
+	if (GI)
 	{
-		bool catalogIsEmpty = true;
-		if (m_FileManager->IsCatalogInsideExist(Path))
-		{
-			TArray<FString> content = m_FileManager->GetCatalogNames();
-			for (FString name : content)
-			{
-				if (name.Left(1) != ".")
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Catalog : %s"), *name));
-				}
-			}
-			catalogIsEmpty = false;
-		}
-		if (m_FileManager->IsFileInsideExist(Path))
-		{
-			TArray<FString> content = m_FileManager->GetFileNames();
-			for (FString name : content)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("File : %s"), *name));
-			}
-			catalogIsEmpty = false;
-		}
-		if (catalogIsEmpty)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("catalog : %s is empty"), *Path));
-		}
+		GI->GetMyFileManager()->GoIntoCatalog(Path);
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Path : %s"), *Path));
 }

@@ -3,12 +3,38 @@
 
 #include "MyFileManager.h"
 #include "Runtime/Core/Public/HAL/FileManager.h"
+#include "Engine/Engine.h"
 
-UMyFileManager::UMyFileManager()
-	: Super()
-	, m_CurrentCatalog("/*")
+
+void UMyFileManager::GoIntoCatalog(const FString& Path)
 {
-
+	if (Path != "")
+	{
+		bool catalogIsEmpty = true;
+		if (IsCatalogInsideExist(Path))
+		{
+			for (FString name : m_CatalogNames)
+			{
+				if (name.Left(1) != ".")
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Catalog : %s"), *name));
+				}
+			}
+			catalogIsEmpty = false;
+		}
+		if (IsFileInsideExist(Path))
+		{
+			for (FString name : m_FilNames)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("File : %s"), *name));
+			}
+			catalogIsEmpty = false;
+		}
+		if (catalogIsEmpty)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("catalog : %s is empty"), *Path));
+		}
+	}
 }
 
 bool UMyFileManager::IsCatalogInsideExist(const FString& Path)
@@ -42,14 +68,4 @@ void UMyFileManager::LookForContent(const FString& Path, bool Catalog)
 			FileMgr.FindFiles(m_FilNames, *currentPath, true, false);
 		}
 	}
-}
-
-const TArray<FString>& UMyFileManager::GetCatalogNames() const
-{
-	return m_CatalogNames;
-}
-
-const TArray<FString>& UMyFileManager::GetFileNames() const
-{
-	return m_FilNames;
 }

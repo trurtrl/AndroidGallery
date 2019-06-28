@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "UserWidget.h"
 #include "MainWidget.h"
+#include "CatalogListWidget.h"
 #include "AGHUD.generated.h"
 
 
@@ -13,7 +14,8 @@ enum class EWidgeTType : uint8
 {
 	None,
 	Main,
-	Viewer
+	CatalogViewer,
+	PhotoViewer
 };
 
 /**
@@ -32,9 +34,14 @@ public:
 
 	void CreateWindow(EWidgeTType Type);
 
+	void AddCatalogsToCatalogListWidget(TArray<FString>& Catalogs);
+
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TSubclassOf<UMainWidget> m_UMainWidgetClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TSubclassOf<UCatalogListWidget> m_UCatalogListWidgetClass;
 
 
 private:

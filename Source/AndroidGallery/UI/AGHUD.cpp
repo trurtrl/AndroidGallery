@@ -4,6 +4,7 @@
 #include "AGHUD.h"
 #include "UObject/ConstructorHelpers.h"
 
+
 AAGHUD::AAGHUD()
 {
 	static ConstructorHelpers::FClassFinder<UMainWidget> UMainWidgetClassFinder(TEXT("/Game/WBP_Main.WBP_Main_C"));
@@ -11,6 +12,11 @@ AAGHUD::AAGHUD()
 	{
 		m_UMainWidgetClass = UMainWidgetClassFinder.Class;
 	}
+	//static ConstructorHelpers::FClassFinder<UCatalogListWidget> UCatalogListWidgetClassFinder(TEXT("/Game/WBP_Main.WBP_Main_C"));
+	//if (UCatalogListWidgetClassFinder.Succeeded())
+	//{
+	//	m_UCatalogListWidgetClass = UCatalogListWidgetClassFinder.Class;
+	//}
 }
 
 void AAGHUD::BeginPlay()
@@ -39,6 +45,20 @@ void AAGHUD::CreateWindow(EWidgeTType Type)
 		}
 	}
 	break;
+	case EWidgeTType::CatalogViewer:
+	{
+		if (m_UCatalogListWidgetClass) {
+			newWidget = CreateWidget<UCatalogListWidget>(GetWorld(), m_UCatalogListWidgetClass);
+		}
+	}
+	break;
+	case EWidgeTType::PhotoViewer:
+	{
+		if (m_UMainWidgetClass) {
+			newWidget = CreateWidget<UMainWidget>(GetWorld(), m_UMainWidgetClass);
+		}
+	}
+	break;
 	default:
 		break;
 	}
@@ -51,5 +71,17 @@ void AAGHUD::CreateWindow(EWidgeTType Type)
 	if (m_CurrentWidget)
 	{
 		m_CurrentWidget->AddToViewport();
+	}
+}
+
+void AAGHUD::AddCatalogsToCatalogListWidget(TArray<FString>& Catalogs)
+{
+	UCatalogListWidget* catalogListWidget = Cast<UCatalogListWidget>(m_CurrentWidget);
+	if (catalogListWidget)
+	{
+		for (FString catalog : Catalogs)
+		{
+
+		}
 	}
 }
