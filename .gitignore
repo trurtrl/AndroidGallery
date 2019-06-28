@@ -83,3 +83,7 @@ Plugins/DLC1.0/*
 
 # KDE
 .kdev4/*
+
+# Android build
+Android_ASTC/*
+

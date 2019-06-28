@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Button.h"
 #include "AndroGallery/Public/AndroidGateway.h"
+#include "MyFileManager.h"
 #include "MainWidget.generated.h"
 
 /**
@@ -17,7 +18,7 @@ class ANDROIDGALLERY_API UMainWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	//UMainWidget(const FObjectInitializer & ObjectInitializer);
+	UMainWidget(const FObjectInitializer & ObjectInitializer);
 
 	virtual void NativeConstruct() override;
 
@@ -34,5 +35,8 @@ private:
 
 	UPROPERTY()
 	UAndroidGateway* m_AndroidGateway;
+
+	UPROPERTY()
+	UMyFileManager* m_FileManager;
 	
 };
