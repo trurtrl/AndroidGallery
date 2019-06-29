@@ -24,7 +24,7 @@ public:
 
 	virtual void NativeConstruct() override;
 
-	void SetPhotoTextures(const TArray<UTexture2D*>& TextureArray);
+	void ShowPhotos(const FString& Path, const TArray<FString>& FileNameArray);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TSubclassOf<UItemWidget> m_UItemWidgetClass;
@@ -45,4 +45,10 @@ private:
 	TArray<UItemWidget*> m_ItemArray;
 
 	int32 m_ItemToSpawnNum;
+
+	UFUNCTION()
+	void OnUserScrolledHandle(float Offset);
+
+	FString	m_CatalogPath;
+	TArray<FString> m_FileNameArray;
 };

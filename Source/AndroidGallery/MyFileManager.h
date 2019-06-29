@@ -28,6 +28,8 @@ public:
 
 	void ReturnFromPhotoViewer();
 
+	UTexture2D* GetTexture(const FString& FileFullPath);
+
 private:
 
 	FString m_RootGalleryPath;
@@ -39,16 +41,12 @@ private:
 	TArray<FString> m_ChildCatalogNames;
 	TArray<FString> m_FileNames;
 
-	UPROPERTY()
-	TArray<UTexture2D*> m_TextureArray;
-
 	bool IsCatalogInsideExist(const FString& Path);
 	bool IsFileInsideExist(const FString& Path);
 
 	//	true for catalogs, false for files
 	void LookForContent(const FString& Path, bool Catalog);
 
-	UTexture2D* GetTexture(const FString& FileFullPath);
 	EImageFormat GetImageFormat(const FString& FileFullPath);
 
 	void ShowPhotosFromDirectory(const FString& CatalogFullPath);

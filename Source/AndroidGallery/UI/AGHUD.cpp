@@ -118,11 +118,11 @@ void AAGHUD::ClearCatalogListWidget()
 }
 
 
-void AAGHUD::SetPhotoTextures(const TArray<UTexture2D*>& TextureArray)
+void AAGHUD::ShowPhotos(const FString& Path, const TArray<FString>& FileNameArray)
 {
 	UPhotoViewerWidget* photoViewer = Cast<UPhotoViewerWidget>(m_CurrentWidget);
 	if (photoViewer)
 	{
-		photoViewer->SetPhotoTextures(TextureArray);
+		photoViewer->ShowPhotos(Path, FileNameArray);
 	}
 }

@@ -199,13 +199,7 @@ void UMyFileManager::ShowPhotosFromDirectory(const FString& CatalogFullPath)
 		m_PhotoViewerFullPath = CatalogFullPath;
 		HUD->CreateWindow(EWidgeTType::PhotoViewer);
 
-		m_TextureArray.Empty();
-		for (FString name : m_FileNames)
-		{
-			m_TextureArray.Add(GetTexture(CatalogFullPath + m_Concatenator + name));
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("File : %s"), *name));
-		}
-		HUD->SetPhotoTextures(m_TextureArray);
+		HUD->ShowPhotos(CatalogFullPath, m_FileNames);
 	}
 }
 

@@ -5,6 +5,7 @@
 #include "MyFileManager.h"
 #include "MyGameInstance.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Engine/Engine.h"
 
 
 UPhotoViewerWidget::UPhotoViewerWidget(const FObjectInitializer & ObjectInitializer)
@@ -22,11 +23,14 @@ void UPhotoViewerWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-//	m_ItemArray.Init(NewObject<UImage>(), 3);
-
 	if (m_ButtonBack && !m_ButtonBack->OnReleased.IsBound())
 	{
 		m_ButtonBack->OnReleased.AddDynamic(this, &UPhotoViewerWidget::ButtonBackClicked);
+	}
+
+	if (m_ScrollBox && !m_ScrollBox->OnUserScrolled.IsBound())
+	{
+		m_ScrollBox->OnUserScrolled.AddDynamic(this, &UPhotoViewerWidget::OnUserScrolledHandle);
 	}
 }
 
@@ -39,19 +43,29 @@ void UPhotoViewerWidget::ButtonBackClicked()
 	}
 }
 
-void UPhotoViewerWidget::SetPhotoTextures(const TArray<UTexture2D*>& TextureArray)
+
+void UPhotoViewerWidget::ShowPhotos(const FString& Path, const TArray<FString>& FileNameArray)
 {
-	//m_ScrollBox->ClearChildren();
-	if (m_UItemWidgetClass)
+	UMyGameInstance* GI = Cast<UMyGameInstance>(GetWorld()->GetGameInstance());
+	if (GI && m_UItemWidgetClass)
 	{
-		int32 photoToShowNum = FMath::Min(m_ItemToSpawnNum, TextureArray.Num());
+		m_CatalogPath = Path;
+		m_FileNameArray = FileNameArray;
+
+		int32 photoToShowNum = FMath::Min(m_ItemToSpawnNum, FileNameArray.Num());
 
 		for (int32 i = 0; i < photoToShowNum; i++)
 		{
 			UItemWidget* item = CreateWidget<UItemWidget>(GetWorld(), m_UItemWidgetClass);
-			item->SetTexture(TextureArray[i]);
+			FString fileFulPath = Path + GI->GetMyFileManager()->GetConcatenator() + FileNameArray[i];
+			item->SetTexture(GI->GetMyFileManager()->GetTexture(fileFulPath));
 			m_ItemArray.Add(item);
 			m_ScrollBox->AddChild(item);
 		}
 	}
+}
+
+void UPhotoViewerWidget::OnUserScrolledHandle(float Offset)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Magenta, FString::Printf(TEXT("Offset %f"), Offset));
 }

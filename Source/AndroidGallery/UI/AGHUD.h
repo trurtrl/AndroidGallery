@@ -42,7 +42,7 @@ public:
 	void ClearCatalogListWidget();
 
 	//	PhotoViewerWidget
-	void SetPhotoTextures(const TArray<UTexture2D*>& TextureArray);
+	void ShowPhotos(const FString& Path, const TArray<FString>& FileNameArray);
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
