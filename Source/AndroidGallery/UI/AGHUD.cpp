@@ -17,6 +17,11 @@ AAGHUD::AAGHUD()
 	{
 		m_UCatalogListWidgetClass = UCatalogListWidgetClassFinder.Class;
 	}
+	static ConstructorHelpers::FClassFinder<UPhotoViewerWidget> UPhotoViewerWidgetClassFinder(TEXT("WidgetBlueprint'/Game/WBP_PhotoViewer.WBP_PhotoViewer_C'"));
+	if (UPhotoViewerWidgetClassFinder.Succeeded())
+	{
+		m_UPhotoViewerWidgetClass = UPhotoViewerWidgetClassFinder.Class;
+	}
 }
 
 void AAGHUD::BeginPlay()
@@ -54,8 +59,8 @@ void AAGHUD::CreateWindow(EWidgeTType Type)
 	break;
 	case EWidgeTType::PhotoViewer:
 	{
-		if (m_UMainWidgetClass) {
-			newWidget = CreateWidget<UMainWidget>(GetWorld(), m_UMainWidgetClass);
+		if (m_UPhotoViewerWidgetClass) {
+			newWidget = CreateWidget<UPhotoViewerWidget>(GetWorld(), m_UPhotoViewerWidgetClass);
 		}
 	}
 	break;
@@ -109,5 +114,15 @@ void AAGHUD::ClearCatalogListWidget()
 	if (catalogListWidget)
 	{
 		catalogListWidget->ClearCatalogList();
+	}
+}
+
+
+void AAGHUD::SetPhotoTextures(const TArray<UTexture2D*>& TextureArray)
+{
+	UPhotoViewerWidget* photoViewer = Cast<UPhotoViewerWidget>(m_CurrentWidget);
+	if (photoViewer)
+	{
+		photoViewer->SetPhotoTextures(TextureArray);
 	}
 }

@@ -6,6 +6,9 @@
 #include "UI/AGHUD.h"
 #include "Engine/Engine.h"
 #include "Runtime/Core/Public/Misc/Paths.h"
+#include "Runtime/Core/Public/Modules/ModuleManager.h"
+#include "Runtime/ImageWrapper/Public/IImageWrapperModule.h"
+#include "Runtime/Core/Public/Misc/FileHelper.h"
 
 
 UMyFileManager::UMyFileManager(const FObjectInitializer & ObjectInitializer)
@@ -13,25 +16,27 @@ UMyFileManager::UMyFileManager(const FObjectInitializer & ObjectInitializer)
 	, m_RootGalleryPath("")
 	, m_Concatenator("/")
 	, m_ParentDirectoryPath("..")
-	, m_CurrentDirectoryPath(".")
+	, m_CurrentDirectoryRelativePath(".")
+	, m_PhotoViewerFullPath("")
 {
 
 }
 
 void UMyFileManager::GoIntoCatalog(const FString& CatalogFullPath, const FString& CatalogName)
 {
-	AAGHUD* HUD = Cast<AAGHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-	if (HUD && CatalogFullPath != "")
+	if (CatalogFullPath != "")
 	{
-		if (CatalogName == m_CurrentDirectoryPath)
+		if (CatalogName == m_CurrentDirectoryRelativePath)
 		{
 			// show current catalog's content
 			if (IsFileInsideExist(CatalogFullPath))
 			{
-				for (FString name : m_FilNames)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("File : %s"), *name));
-				}
+				ShowPhotosFromDirectory(CatalogFullPath);
+			}
+			else
+			{
+				// TODO	show widget with empty
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("NO images")));
 			}
 		}
 		else
@@ -39,50 +44,14 @@ void UMyFileManager::GoIntoCatalog(const FString& CatalogFullPath, const FString
 			FString catalogFullPath = CatalogFullPath;
 			catalogFullPath.RemoveFromEnd(m_Concatenator);
 
-			FString fullPath = "";
 			if (CatalogName == m_ParentDirectoryPath)
 			{
-				FString parentPath = "";
-				if (m_RootGalleryPath == catalogFullPath)
-				{
-					//	prevent to go out of accessed catalog
-					parentPath = catalogFullPath;
-				}
-				else
-				{
-					//	get parent
-					parentPath = FPaths::GetPath(catalogFullPath);
-					//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Catalog : %s"), *catalogFullPath));
-					//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Parent : %s"), *parentPath));
-				}
-				GoIntoCatalog(parentPath, "");
+				GoToParentDirectory(catalogFullPath);
 			}
 			else
 			{
-				fullPath = catalogFullPath + m_Concatenator + CatalogName;
-
-				HUD->CreateWindow(EWidgeTType::CatalogViewer);
-				HUD->ClearCatalogListWidget();
-
-				if (IsCatalogInsideExist(fullPath))
-				{
-					for (int32 i = 0; i < m_ChildCatalogNames.Num(); ++i)
-					{
-						//	if catalog's name begins with "."
-						if (m_ChildCatalogNames[i].Left(1) == ".")
-						{
-							m_ChildCatalogNames.RemoveAt(i);
-						}
-					}
-
-					HUD->AddCatalogToCatalogListWidget(fullPath, m_ChildCatalogNames);
-				}
-				else
-				{
-					//	if within the catalog is no a sub-catalog
-					HUD->AddCatalogToCatalogListWidget(fullPath, m_ParentDirectoryPath);
-					HUD->AddCatalogToCatalogListWidget(fullPath, m_CurrentDirectoryPath);
-				}
+				FString currentFullPath = catalogFullPath + m_Concatenator + CatalogName;
+				ShowInternalDirectories(currentFullPath);
 			}
 		}
 	}
@@ -99,7 +68,17 @@ bool UMyFileManager::IsFileInsideExist(const FString& Path)
 {
 	LookForContent(Path, false);
 
-	return m_FilNames.Num();
+	//	if file is NOT image remove it from array
+	for (int32 i = 0; i < m_FileNames.Num(); ++i)
+	{
+		if (GetImageFormat(m_FileNames[i]) == EImageFormat::Invalid)
+		{
+			m_FileNames.RemoveAt(i);
+			i--;
+		}
+	}
+
+	return m_FileNames.Num();
 }
 
 void UMyFileManager::LookForContent(const FString& Path, bool Catalog)
@@ -115,8 +94,8 @@ void UMyFileManager::LookForContent(const FString& Path, bool Catalog)
 		}
 		else
 		{
-			m_FilNames.Empty();
-			FileMgr.FindFiles(m_FilNames, *currentPath, true, false);
+			m_FileNames.Empty();
+			FileMgr.FindFiles(m_FileNames, *currentPath, true, false);
 		}
 	}
 }
@@ -129,4 +108,150 @@ void UMyFileManager::SetRootGalleryPath(const FString& Path)
 const FString& UMyFileManager::GetConcatenator() const
 {
 	return m_Concatenator;
+}
+
+void UMyFileManager::ReturnFromPhotoViewer()
+{
+	GoIntoCatalog(m_PhotoViewerFullPath, "");
+}
+
+UTexture2D* UMyFileManager::GetTexture(const FString& FileFullPath)
+{
+	UTexture2D* texture = nullptr;
+//	bool isValid = false;
+
+	IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>(FName("ImageWrapper"));
+	TSharedPtr<IImageWrapper> ImageWrapper = ImageWrapperModule.CreateImageWrapper(GetImageFormat(FileFullPath));
+
+	//Load From File
+	TArray<uint8> RawFileData;
+	if (!FFileHelper::LoadFileToArray(RawFileData, *FileFullPath)) return NULL;
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	//Create Texture2D!
+	if (ImageWrapper.IsValid() && ImageWrapper->SetCompressed(RawFileData.GetData(), RawFileData.Num()))
+	{
+		const TArray<uint8>* UncompressedBGRA = NULL;
+		if (ImageWrapper->GetRaw(ERGBFormat::BGRA, 8, UncompressedBGRA))
+		{
+			texture = UTexture2D::CreateTransient(ImageWrapper->GetWidth(), ImageWrapper->GetHeight(), PF_B8G8R8A8);
+
+			//Valid?
+			if (!texture) return NULL;
+			//~~~~~~~~~~~~~~
+
+			////Out!
+			//Width = ImageWrapper->GetWidth();
+			//Height = ImageWrapper->GetHeight();
+
+			//Copy!
+			void* TextureData = texture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
+			FMemory::Memcpy(TextureData, UncompressedBGRA->GetData(), UncompressedBGRA->Num());
+			texture->PlatformData->Mips[0].BulkData.Unlock();
+
+			//Update!
+			texture->UpdateResource();
+		}
+	}
+
+	// Success!
+//	isValid = true;
+	return texture;
+}
+
+EImageFormat UMyFileManager::GetImageFormat(const FString& FileFullPath)
+{
+	EImageFormat imageFormat = EImageFormat::Invalid;
+	FString extension = FPaths::GetExtension(FileFullPath);
+	extension.ToLower();
+	if (extension == "jpg" || extension == "jpeg")
+	{
+		imageFormat = EImageFormat::JPEG;
+	}
+	else if (extension == "png")
+	{
+		imageFormat = EImageFormat::PNG;
+	}
+	else if (extension == "bmp")
+	{
+		imageFormat = EImageFormat::BMP;
+	}
+	else if (extension == "ico")
+	{
+		imageFormat = EImageFormat::ICO;
+	}
+	else if (extension == "exr")
+	{
+		imageFormat = EImageFormat::EXR;
+	}
+	else if (extension == "icns")
+	{
+		imageFormat = EImageFormat::ICNS;
+	}
+	return imageFormat;
+}
+
+void UMyFileManager::ShowPhotosFromDirectory(const FString& CatalogFullPath)
+{
+	AAGHUD* HUD = Cast<AAGHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	if (HUD)
+	{
+		m_PhotoViewerFullPath = CatalogFullPath;
+		HUD->CreateWindow(EWidgeTType::PhotoViewer);
+
+		m_TextureArray.Empty();
+		for (FString name : m_FileNames)
+		{
+			m_TextureArray.Add(GetTexture(CatalogFullPath + m_Concatenator + name));
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("File : %s"), *name));
+		}
+		HUD->SetPhotoTextures(m_TextureArray);
+	}
+}
+
+void UMyFileManager::GoToParentDirectory(const FString& CurrentCatalogFullPath)
+{
+	FString parentPath = "";
+	if (m_RootGalleryPath == CurrentCatalogFullPath)
+	{
+		//	prevent to go out of accessed catalog
+		parentPath = CurrentCatalogFullPath;
+	}
+	else
+	{
+		//	get parent
+		parentPath = FPaths::GetPath(CurrentCatalogFullPath);
+		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Catalog : %s"), *catalogFullPath));
+		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Parent : %s"), *parentPath));
+	}
+	GoIntoCatalog(parentPath, "");
+}
+
+void UMyFileManager::ShowInternalDirectories(const FString& CurrentCatalogFullPath)
+{
+	AAGHUD* HUD = Cast<AAGHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	if (HUD)
+	{
+		HUD->CreateWindow(EWidgeTType::CatalogViewer);
+		HUD->ClearCatalogListWidget();
+
+		if (IsCatalogInsideExist(CurrentCatalogFullPath))
+		{
+			for (int32 i = 0; i < m_ChildCatalogNames.Num(); ++i)
+			{
+				//	if catalog's name begins with "."
+				if (m_ChildCatalogNames[i].Left(1) == ".")
+				{
+					m_ChildCatalogNames.RemoveAt(i);
+				}
+			}
+			HUD->AddCatalogToCatalogListWidget(CurrentCatalogFullPath, m_ChildCatalogNames);
+		}
+		else
+		{
+			//	if within the catalog is no a sub-catalog
+			HUD->AddCatalogToCatalogListWidget(CurrentCatalogFullPath, m_ParentDirectoryPath);
+			HUD->AddCatalogToCatalogListWidget(CurrentCatalogFullPath, m_CurrentDirectoryRelativePath);
+		}
+	}
 }

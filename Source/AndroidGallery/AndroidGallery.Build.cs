@@ -8,7 +8,7 @@ public class AndroidGallery : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AndroGallery" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "ImageWrapper", "AndroGallery" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

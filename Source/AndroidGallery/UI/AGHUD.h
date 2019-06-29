@@ -7,6 +7,7 @@
 #include "UserWidget.h"
 #include "MainWidget.h"
 #include "CatalogListWidget.h"
+#include "PhotoViewerWidget.h"
 #include "AGHUD.generated.h"
 
 
@@ -34,16 +35,24 @@ public:
 
 	void CreateWindow(EWidgeTType Type);
 
+	//	CatalogListWidget
 	void AddCatalogToCatalogListWidget(const FString& Path, const TArray<FString>& Catalogs);
 	void AddCatalogToCatalogListWidget(const FString& Path, const FString& Catalog);
 
 	void ClearCatalogListWidget();
+
+	//	PhotoViewerWidget
+	void SetPhotoTextures(const TArray<UTexture2D*>& TextureArray);
+
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TSubclassOf<UMainWidget> m_UMainWidgetClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TSubclassOf<UCatalogListWidget> m_UCatalogListWidgetClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TSubclassOf<UPhotoViewerWidget> m_UPhotoViewerWidgetClass;
 
 
 private:

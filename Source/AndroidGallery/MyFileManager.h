@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Runtime/Engine/Classes/Engine/Texture2D.h"
+#include "Runtime/ImageWrapper/Public/IImageWrapper.h"
 #include "MyFileManager.generated.h"
 
 /**
@@ -24,19 +26,32 @@ public:
 
 	const FString& GetConcatenator() const;
 
+	void ReturnFromPhotoViewer();
+
 private:
 
 	FString m_RootGalleryPath;
 	FString m_Concatenator;
 	FString m_ParentDirectoryPath;
-	FString m_CurrentDirectoryPath;
+	FString m_CurrentDirectoryRelativePath;
+	FString m_PhotoViewerFullPath;
 
 	TArray<FString> m_ChildCatalogNames;
-	TArray<FString> m_FilNames;
+	TArray<FString> m_FileNames;
+
+	UPROPERTY()
+	TArray<UTexture2D*> m_TextureArray;
 
 	bool IsCatalogInsideExist(const FString& Path);
 	bool IsFileInsideExist(const FString& Path);
 
 	//	true for catalogs, false for files
 	void LookForContent(const FString& Path, bool Catalog);
+
+	UTexture2D* GetTexture(const FString& FileFullPath);
+	EImageFormat GetImageFormat(const FString& FileFullPath);
+
+	void ShowPhotosFromDirectory(const FString& CatalogFullPath);
+	void GoToParentDirectory(const FString& CurrentCatalogFullPath);
+	void ShowInternalDirectories(const FString& CurrentCatalogFullPath);
 };
