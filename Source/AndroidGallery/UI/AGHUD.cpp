@@ -22,6 +22,11 @@ AAGHUD::AAGHUD()
 	{
 		m_UPhotoViewerWidgetClass = UPhotoViewerWidgetClassFinder.Class;
 	}
+	static ConstructorHelpers::FClassFinder<UNoPhotoWidget> UNoPhotoWidgetClassFinder(TEXT("WidgetBlueprint'/Game/WBP_NoPhoto.WBP_NoPhoto_C'"));
+	if (UNoPhotoWidgetClassFinder.Succeeded())
+	{
+		m_UNoPhotoWidgetClass = UNoPhotoWidgetClassFinder.Class;
+	}
 }
 
 void AAGHUD::BeginPlay()
@@ -61,6 +66,13 @@ void AAGHUD::CreateWindow(EWidgeTType Type)
 	{
 		if (m_UPhotoViewerWidgetClass) {
 			newWidget = CreateWidget<UPhotoViewerWidget>(GetWorld(), m_UPhotoViewerWidgetClass);
+		}
+	}
+	break;
+	case EWidgeTType::NoPhoto:
+	{
+		if (m_UNoPhotoWidgetClass) {
+			newWidget = CreateWidget<UNoPhotoWidget>(GetWorld(), m_UNoPhotoWidgetClass);
 		}
 	}
 	break;

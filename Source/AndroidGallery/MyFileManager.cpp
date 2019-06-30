@@ -28,6 +28,7 @@ void UMyFileManager::GoIntoCatalog(const FString& CatalogFullPath, const FString
 	{
 		if (CatalogName == m_CurrentDirectoryRelativePath)
 		{
+			m_PhotoViewerFullPath = CatalogFullPath;
 			// show current catalog's content
 			if (IsFileInsideExist(CatalogFullPath))
 			{
@@ -35,8 +36,8 @@ void UMyFileManager::GoIntoCatalog(const FString& CatalogFullPath, const FString
 			}
 			else
 			{
-				// TODO	show widget with empty
-				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("NO images")));
+//				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("NO images")));
+				ShowNoPhotoWidget();
 			}
 		}
 		else
@@ -196,7 +197,6 @@ void UMyFileManager::ShowPhotosFromDirectory(const FString& CatalogFullPath)
 	AAGHUD* HUD = Cast<AAGHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	if (HUD)
 	{
-		m_PhotoViewerFullPath = CatalogFullPath;
 		HUD->CreateWindow(EWidgeTType::PhotoViewer);
 
 		HUD->ShowPhotos(CatalogFullPath, m_FileNames);
@@ -247,5 +247,14 @@ void UMyFileManager::ShowInternalDirectories(const FString& CurrentCatalogFullPa
 			HUD->AddCatalogToCatalogListWidget(CurrentCatalogFullPath, m_ParentDirectoryPath);
 			HUD->AddCatalogToCatalogListWidget(CurrentCatalogFullPath, m_CurrentDirectoryRelativePath);
 		}
+	}
+}
+
+void UMyFileManager::ShowNoPhotoWidget()
+{
+	AAGHUD* HUD = Cast<AAGHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	if (HUD)
+	{
+		HUD->CreateWindow(EWidgeTType::NoPhoto);
 	}
 }

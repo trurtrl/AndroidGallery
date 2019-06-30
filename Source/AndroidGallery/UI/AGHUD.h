@@ -8,6 +8,7 @@
 #include "MainWidget.h"
 #include "CatalogListWidget.h"
 #include "PhotoViewerWidget.h"
+#include "NoPhotoWidget.h"
 #include "AGHUD.generated.h"
 
 
@@ -16,7 +17,8 @@ enum class EWidgeTType : uint8
 	None,
 	Main,
 	CatalogViewer,
-	PhotoViewer
+	PhotoViewer,
+	NoPhoto
 };
 
 /**
@@ -54,6 +56,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TSubclassOf<UPhotoViewerWidget> m_UPhotoViewerWidgetClass;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TSubclassOf<UNoPhotoWidget> m_UNoPhotoWidgetClass;
 
 private:
 

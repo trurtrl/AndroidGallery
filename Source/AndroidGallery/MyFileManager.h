@@ -52,4 +52,5 @@ private:
 	void ShowPhotosFromDirectory(const FString& CatalogFullPath);
 	void GoToParentDirectory(const FString& CurrentCatalogFullPath);
 	void ShowInternalDirectories(const FString& CurrentCatalogFullPath);
+	void ShowNoPhotoWidget();
 };

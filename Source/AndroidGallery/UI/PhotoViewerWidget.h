@@ -3,8 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "Components/Button.h"
+#include "NoPhotoWidget.h"
 #include "Components/Image.h"
 #include "Components/ScrollBox.h"
 #include "ItemWidget.h"
@@ -14,7 +13,7 @@
  * 
  */
 UCLASS()
-class ANDROIDGALLERY_API UPhotoViewerWidget : public UUserWidget
+class ANDROIDGALLERY_API UPhotoViewerWidget : public UNoPhotoWidget
 {
 	GENERATED_BODY()
 	
@@ -32,19 +31,12 @@ public:
 private:
 
 	UPROPERTY(meta = (BindWidget))
-	UButton* m_ButtonBack;
-
-	UPROPERTY(meta = (BindWidget))
 	UScrollBox* m_ScrollBox;
-
-
-	UFUNCTION()
-	void ButtonBackClicked();
 
 	UPROPERTY()
 	TArray<UItemWidget*> m_ItemArray;
 
-	int32 m_ItemToSpawnNum;
+//	int32 m_ItemToSpawnNum;
 
 	UFUNCTION()
 	void OnUserScrolledHandle(float Offset);
